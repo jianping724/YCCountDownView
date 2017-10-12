@@ -12,6 +12,7 @@
 # 2.更多信息可以看[综合案例](https://gold.xitu.io)
 
 # 3.使用方法
+- 导入库：compile 'cn.yc:YCCountDownViewLib:1.0'
 - 第一步：写布局
 ```
     <com.ns.yc.yccountdownviewlib.CountDownView
