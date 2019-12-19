@@ -1,24 +1,22 @@
 # YCCountDownView自定义倒计时器
 - 01.该库基础介绍
 - 02.该库使用方法
-- 03.
+- 03.关于其他介绍
 
 
 
 ### 01.该库基础介绍
-- 启动页倒计时自定义控件
+- 启动页倒计时自定义控件，可以自定义倒计时单位，时间；可以自定义倒计时开始角度；主要应用场景是启动页倒计时。
 
 
 ### 02.该库使用方法
-- 导入库：compile 'cn.yc:YCCountDownViewLib:1.0.1'
 - 第一步：写布局
     ```
-    <com.ns.yc.yccountdownviewlib.CountDownView
+    <com.ns.yc.lib.CountDownView
         android:id="@+id/cdv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:layout_marginRight="20dp"
         app:cd_animator_time="3"
         app:cd_animator_time_unit="秒"
@@ -50,3 +48,34 @@
         });
     }
     ```
+
+
+
+### 3.其他说明
+#### 3.1 其他推荐说明
+- 1.[技术博客汇总](https://www.jianshu.com/p/614cb839182c)
+- 2.[开源项目汇总](https://blog.csdn.net/m0_37700275/article/details/80863574)
+- 3.[生活博客汇总](https://blog.csdn.net/m0_37700275/article/details/79832978)
+- 4.[喜马拉雅音频汇总](https://www.jianshu.com/p/f665de16d1eb)
+- 5.[其他汇总](https://www.jianshu.com/p/53017c3fc75d)
+- 6.[重点推荐：博客笔记大汇总，开源文件都是md格式](https://github.com/yangchong211/YCBlogs)
+
+
+
+#### 3.2 关于LICENSE
+```
+Copyright 2017 yangchong211（github.com/yangchong211）
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
+

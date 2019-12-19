@@ -7,6 +7,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ns.yc.lib.CountDownView;
+import com.ns.yc.lib.OnFinishListener;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initCountDownView() {
         cdvTime.setTime(5);
-        cdvTime.setOnLoadingFinishListener(new CountDownView.OnLoadingFinishListener() {
+        cdvTime.setFinishListener(new OnFinishListener() {
             @Override
             public void finish() {
                 Toast.makeText(MainActivity.this,"完成倒计时",Toast.LENGTH_SHORT).show();

@@ -341,16 +341,11 @@ public class CountDownView extends View {
         mLoadingTime = time;
     }
 
-    private OnLoadingFinishListener loadingFinishListener;
-    public void setOnLoadingFinishListener(OnLoadingFinishListener listener) {
+    private OnFinishListener loadingFinishListener;
+    public void setFinishListener(OnFinishListener listener) {
         this.loadingFinishListener = listener;
     }
-    public interface OnLoadingFinishListener {
-        /**
-         * 结束监听
-         */
-        void finish();
-    }
+
 
     /**
      * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
