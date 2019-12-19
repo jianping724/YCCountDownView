@@ -8,12 +8,20 @@
     android:orientation="vertical"
     android:padding="10dp">
 
-    <com.ns.yc.yccountdownviewlib.CountDownView
+    <TextView
+        android:id="@+id/tv_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="1.开始倒计时控件"
+        android:background="@color/colorAccent"/>
+
+
+    <com.ns.yc.lib.CountDownView
         android:id="@+id/cdv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:layout_marginRight="20dp"
         app:cd_animator_time="3"
         app:cd_animator_time_unit="秒"

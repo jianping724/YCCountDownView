@@ -3,13 +3,15 @@ package com.ns.yc.yccountdownview;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ns.yc.yccountdownviewlib.CountDownView;
+import com.ns.yc.lib.CountDownView;
 
 public class MainActivity extends AppCompatActivity {
 
     private CountDownView cdvTime;
+    private TextView tv1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,11 +27,18 @@ public class MainActivity extends AppCompatActivity {
 
     private void initFindViewById() {
         cdvTime = (CountDownView) findViewById(R.id.cdv_time);
+        tv1 = findViewById(R.id.tv_1);
+
+        tv1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cdvTime.start();
+            }
+        });
     }
 
     private void initCountDownView() {
         cdvTime.setTime(5);
-        cdvTime.start();
         cdvTime.setOnLoadingFinishListener(new CountDownView.OnLoadingFinishListener() {
             @Override
             public void finish() {

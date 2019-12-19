@@ -1,20 +1,18 @@
-# YCCountDownView
-# 自定义倒计时器
-## 1.倒计时图片
-## 2.更多信息看综合案例
-## 3.使用方法
+# YCCountDownView自定义倒计时器
+- 01.该库基础介绍
+- 02.该库使用方法
+- 03.
+
+
+
+### 01.该库基础介绍
+- 启动页倒计时自定义控件
+
+
+### 02.该库使用方法
+- 导入库：compile 'cn.yc:YCCountDownViewLib:1.0.1'
 - 第一步：写布局
-- 第二步：使用
-
-# 1.倒计时图片
-- ![image](https://github.com/yangchong211/LifeHelper/blob/master/image/Screenshot_2017-09-30-17-47-12.png)
-
-# 2.更多信息可以看[综合案例](https://gold.xitu.io)
-
-# 3.使用方法
-- 导入库：compile 'cn.yc:YCCountDownViewLib:1.0'
-- 第一步：写布局
-```
+    ```
     <com.ns.yc.yccountdownviewlib.CountDownView
         android:id="@+id/cdv_time"
         android:layout_width="wrap_content"
@@ -32,9 +30,9 @@
         app:cd_retreat_type="forward"
         app:cd_text_color="@color/blackText"
         app:cd_text_size="9sp" />
-```
+    ```
 - 第二步：使用
-```
+    ```
     private void initCountDownView() {
         cdvTime.setTime(5);
         cdvTime.start();

@@ -1,4 +1,19 @@
-package com.ns.yc.yccountdownviewlib;
+/*
+Copyright 2017 yangchong211（github.com/yangchong211）
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+package com.ns.yc.lib;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -12,6 +27,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.Build;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -21,40 +37,128 @@ import android.view.animation.LinearInterpolator;
 
 
 
-
 /**
- * ================================================
- * 作    者：杨充
- * 版    本：1.0
- * 创建日期：2017/5/18
- * 描    述：倒计时自定义控件
- * 修订历史：
- * ================================================
+ * <pre>
+ *     @author yangchong
+ *     blog  : https://github.com/yangchong211/YCStatusBar
+ *     time  : 2017/5/18
+ *     desc  : 倒计时自定义控件
+ *     revise:
+ * </pre>
  */
 public class CountDownView extends View {
 
-    private Context mContext;//上下文
-    private Paint mPaintBackGround;//背景画笔
-    private Paint mPaintArc;//圆弧画笔
-    private Paint mPaintText;//文字画笔
-    private int mRetreatType;//圆弧绘制方式（增加和减少）
-    private float mPaintArcWidth;//最外层圆弧的宽度
-    private int mCircleRadius;//圆圈的半径
-    private int mPaintArcColor = Color.parseColor("#3C3F41");//初始值
-    private int mPaintBackGroundColor = Color.parseColor("#55B2E5");//初始值
-    private int mLoadingTime;//时间，单位秒
-    private String mLoadingTimeUnit = "";//时间单位
-    private int mTextColor = Color.BLACK;//字体颜色
-    private int mTextSize;//字体大小
-    private int location;//从哪个位置开始
-    private float startAngle;//开始角度
-    private float mmSweepAngleStart;//起点
-    private float mmSweepAngleEnd;//终点
-    private float mSweepAngle;//扫过的角度
-    private String mText = "";//要绘制的文字
+    /**
+     * 上下文
+     */
+    private Context mContext;
+    /**
+     * 背景画笔
+     */
+    private Paint mPaintBackGround;
+    /**
+     * 圆弧画笔
+     */
+    private Paint mPaintArc;
+    /**
+     * 文字画笔
+     */
+    private Paint mPaintText;
+    /**
+     * 圆弧绘制方式（增加和减少）
+     */
+    private int mRetreatType;
+    /**
+     * 最外层圆弧的宽度
+     */
+    private float mPaintArcWidth;
+    /**
+     * 圆圈的半径
+     */
+    private int mCircleRadius;
+    /**
+     * 初始值
+     */
+    private int mPaintArcColor = Color.parseColor("#3C3F41");
+    /**
+     * 初始值
+     */
+    private int mPaintBackGroundColor = Color.parseColor("#55B2E5");
+    /**
+     * 时间，单位秒
+     */
+    private int mLoadingTime;
+    /**
+     * 时间单位
+     */
+    private String mLoadingTimeUnit = "";
+    /**
+     * 字体颜色
+     */
+    private int mTextColor = Color.BLACK;
+    /**
+     * 字体大小
+     */
+    private int mTextSize;
+    /**
+     * 从哪个位置开始
+     */
+    private int location;
+    /**
+     * 开始角度
+     */
+    private float startAngle;
+    /**
+     * 起点
+     */
+    private float mmSweepAngleStart;
+    /**
+     * 终点
+     */
+    private float mmSweepAngleEnd;
+    /**
+     * 扫过的角度
+     */
+    private float mSweepAngle;
+    /**
+     * 要绘制的文字
+     */
+    private String mText = "";
+    /**
+     * 是否在运行中
+     */
+    private boolean isRunning = false;
     private int mWidth;
     private int mHeight;
     private AnimatorSet set;
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        stop();
+    }
+
+    @Nullable
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Parcelable superState = super.onSaveInstanceState();
+        CountDownState viewState = new CountDownState(superState);
+        viewState.mLoadingTime = mLoadingTime;
+        viewState.mLocation = location;
+        viewState.isRunning = isRunning;
+        return viewState;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        CountDownState viewState = (CountDownState) state;
+        super.onRestoreInstanceState(viewState.getSuperState());
+        mLoadingTime = viewState.mLoadingTime;
+        location = viewState.mLocation;
+        if (viewState.isRunning) {
+            start();
+        }
+    }
 
     public CountDownView(Context context) {
         this(context, null);
@@ -71,14 +175,19 @@ public class CountDownView extends View {
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.CountDownView);
         mRetreatType = array.getInt(R.styleable.CountDownView_cd_retreat_type, 1);
         location = array.getInt(R.styleable.CountDownView_cd_location, 1);
-        mCircleRadius = (int) array.getDimension(R.styleable.CountDownView_cd_circle_radius, dip2px(context, 25));//默认25dp
-        mPaintArcWidth = array.getDimension(R.styleable.CountDownView_cd_arc_width, dip2px(context, 3));//默认3dp
+        //默认25dp
+        mCircleRadius = (int) array.getDimension(R.styleable.CountDownView_cd_circle_radius, dip2px(context, 25));
+        //默认3dp
+        mPaintArcWidth = array.getDimension(R.styleable.CountDownView_cd_arc_width, dip2px(context, 3));
         mPaintArcColor = array.getColor(R.styleable.CountDownView_cd_arc_color, mPaintArcColor);
-        mTextSize = (int) array.getDimension(R.styleable.CountDownView_cd_text_size, dip2px(context, 14));//默认14sp
+        //默认14sp
+        mTextSize = (int) array.getDimension(R.styleable.CountDownView_cd_text_size, dip2px(context, 14));
         mTextColor = array.getColor(R.styleable.CountDownView_cd_text_color, mTextColor);
         mPaintBackGroundColor = array.getColor(R.styleable.CountDownView_cd_bg_color, mPaintBackGroundColor);
-        mLoadingTime = array.getInteger(R.styleable.CountDownView_cd_animator_time, 3);//默认3秒
-        mLoadingTimeUnit = array.getString(R.styleable.CountDownView_cd_animator_time_unit);//时间单位
+        //默认3秒
+        mLoadingTime = array.getInteger(R.styleable.CountDownView_cd_animator_time, 3);
+        //时间单位
+        mLoadingTimeUnit = array.getString(R.styleable.CountDownView_cd_animator_time_unit);
         if (TextUtils.isEmpty(mLoadingTimeUnit)) {
             mLoadingTimeUnit = "";
         }
@@ -90,17 +199,20 @@ public class CountDownView extends View {
     private void init() {
         //背景设为透明，然后造成圆形View的视觉错觉
         this.setBackground(ContextCompat.getDrawable(mContext, android.R.color.transparent));
+        //创建背景画笔
         mPaintBackGround = new Paint();
         mPaintBackGround.setStyle(Paint.Style.FILL);
         mPaintBackGround.setAntiAlias(true);
         mPaintBackGround.setColor(mPaintBackGroundColor);
 
+        //创建圆弧画笔
         mPaintArc = new Paint();
         mPaintArc.setStyle(Paint.Style.STROKE);
         mPaintArc.setAntiAlias(true);
         mPaintArc.setColor(mPaintArcColor);
         mPaintArc.setStrokeWidth(mPaintArcWidth);
 
+        //创建文字画笔
         mPaintText = new Paint();
         mPaintText.setStyle(Paint.Style.STROKE);
         mPaintText.setAntiAlias(true);
@@ -110,7 +222,8 @@ public class CountDownView extends View {
         if (mLoadingTime < 0) {
             mLoadingTime = 3;
         }
-        if (location == 1) {//默认从左侧开始
+        if (location == 1) {
+            //默认从左侧开始
             startAngle = -180;
         } else if (location == 2) {
             startAngle = -90;
@@ -168,9 +281,10 @@ public class CountDownView extends View {
      * 开始动态倒计时
      */
     public void start() {
-        ValueAnimator animator = ValueAnimator.ofFloat(mmSweepAngleStart, mmSweepAngleEnd);
-        animator.setInterpolator(new LinearInterpolator());
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        isRunning = true;
+        ValueAnimator animator1 = ValueAnimator.ofFloat(mmSweepAngleStart, mmSweepAngleEnd);
+        animator1.setInterpolator(new LinearInterpolator());
+        animator1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
                 mSweepAngle = (float) valueAnimator.getAnimatedValue();
@@ -179,9 +293,9 @@ public class CountDownView extends View {
             }
         });
         //这里是时间获取和赋值
-        ValueAnimator animator1 = ValueAnimator.ofInt(mLoadingTime, 0);
-        animator1.setInterpolator(new LinearInterpolator());
-        animator1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        ValueAnimator animator2 = ValueAnimator.ofInt(mLoadingTime, 0);
+        animator2.setInterpolator(new LinearInterpolator());
+        animator2.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
                 int time = (int) valueAnimator.getAnimatedValue();
@@ -189,7 +303,7 @@ public class CountDownView extends View {
             }
         });
         set = new AnimatorSet();
-        set.playTogether(animator, animator1);
+        set.playTogether(animator1, animator2);
         set.setDuration(mLoadingTime * 1000);
         set.setInterpolator(new LinearInterpolator());
         set.start();
@@ -201,6 +315,7 @@ public class CountDownView extends View {
                 if (loadingFinishListener != null) {
                     loadingFinishListener.finish();
                 }
+                isRunning = false;
             }
         });
     }
@@ -211,6 +326,7 @@ public class CountDownView extends View {
     public void stop(){
         if(set!=null && set.isRunning()){
             set.cancel();
+            isRunning = false;
         }
     }
 
@@ -219,6 +335,9 @@ public class CountDownView extends View {
      * @param time      时间，秒
      */
     public void setTime(int time){
+        if (time<0){
+            time = 3;
+        }
         mLoadingTime = time;
     }
 
@@ -227,6 +346,9 @@ public class CountDownView extends View {
         this.loadingFinishListener = listener;
     }
     public interface OnLoadingFinishListener {
+        /**
+         * 结束监听
+         */
         void finish();
     }
 
